@@ -1,41 +1,22 @@
-# Prerequisites
-*.d
+/build/
+/CMakeUserPresets.json
+/.vs/
+/.idea/
 
-# Compiled Object files
-*.slo
-*.lo
+# Local builds and editor/compiler output
+CMakeCache.txt
+CMakeFiles/
+Testing/
+compile_commands.json
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
+*.a
+*.lib
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
-*.out
-*.app
-*.ipch
-*.ipdb
-*.tlog
 *.pdb
-sources/.vs/rodent-iv/v15/.suo
-sources/.vs/rodent-iv/v15/Browse.VC.db
-sources/x64/Release/rodent-iv.iobj
+*.ilk
 *.log
-sources/.vs/rodent-iv/v15/Browse.VC.opendb
+.DS_Store

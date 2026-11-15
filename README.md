@@ -1,8 +1,108 @@
-# rodent-iv
-trying to start a community effort based on Rodent IV
+# Rodent IV
 
-# rodent-iv
-trying to start a community effort based on Rodent IV
+A UCI chess engine with configurable playing personalities, based on Sungorus.
+This repository continues the community effort around Rodent IV.
+
+## Build
+
+Requires a C++14 compiler, CMake 3.24 or newer, and platform thread support.
+The presets use Ninja. With MSVC, run them in a Visual Studio developer shell.
+
+```sh
+cmake --preset release
+cmake --build --preset release --parallel
+ctest --preset release
+```
+
+The executable is `build/release/bin/rodentIV` (`rodentIV.exe` on Windows).
+Books and personalities are copied alongside it, so it can be launched from
+any working directory or registered directly in a UCI chess GUI.
+
+The `debug` and `relwithdebinfo` presets use separate build directories:
+
+```sh
+cmake --preset debug
+cmake --build --preset debug --parallel
+ctest --preset debug
+```
+
+Builds without Ninja and IDE-generated projects are also supported:
+
+```sh
+cmake -S . -B build/custom -DCMAKE_BUILD_TYPE=Release
+cmake --build build/custom --config Release --parallel
+ctest --test-dir build/custom -C Release --output-on-failure
+```
+
+For Visual Studio, select its generator with `-G`, for example
+`-G "Visual Studio 17 2022" -A x64`. Multi-configuration generators place the
+executable and its data in `build/custom/bin/Release/` (or `Debug/`).
+
+CPU-specific GCC/Clang optimizations are optional:
+
+```sh
+cmake --preset release -DRODENT_NATIVE=ON
+```
+
+Such binaries are intended for the build machine. The default is
+`RODENT_NATIVE=OFF`. Use `-DBUILD_TESTING=OFF` to omit test registration.
+
+## Install and runtime data
+
+```sh
+cmake --install build/release --prefix "$HOME/.local"
+```
+
+This installs the engine in `bin/`, books and personalities in
+`share/rodentIV/`, and the manual, personality editor, and license in
+`share/doc/RodentIV/`. Standard `CMAKE_INSTALL_BINDIR` and
+`CMAKE_INSTALL_DATADIR` overrides and `DESTDIR` staging are supported. For a
+multi-configuration build, add `--config Release` when installing.
+
+The engine uses the following data locations, in order:
+
+1. `RODENT4HOME`, when set, identifies a data root containing `books/` and
+   `personalities/`.
+2. Data next to the executable, for build trees and portable distributions.
+3. The installed data directory relative to the executable, then the path
+   configured at build time as a fallback.
+
+A data root is recognized by `personalities/basic.ini`. Explicit
+`RODENT4BOOKS` and `RODENT4PERSONALITIES` values override the individual
+subdirectories. Use absolute paths for these two overrides. Existing Android
+storage locations remain available as fallbacks.
+
+Installation prefixes can be moved together with their `bin/` and `share/`
+directories. For a portable copy, keep the executable and its adjacent
+`books/` and `personalities/` directories together.
+
+To edit installed personalities, copy the data to a writable directory and set
+`RODENT4HOME` to that directory. The optional GUI personality-set selector also
+needs write access to `personalities/basic.ini`.
+
+## Personalities and documentation
+
+- `personalities/basic.ini` lists the personality sets exposed in UCI.
+- `personalities/default.txt` contains optional startup settings.
+- [Personality editor](docs/personality-editor.html): open locally in a browser
+  to create a personality file.
+- [Manual](docs/FinalRodent.pdf).
+- `books/rodent.bin` is the default main book. The former `exe/rodent.bin` is
+  preserved as the alternative `books/main/rodent-legacy.bin`; see its
+  [description](books/main/README.md).
+- [Opening books and origin notes](books/README.md).
+
+## Verification
+
+`ctest` checks UCI initialization, the `bench 8` reference of **557,513 nodes**,
+loading selected personalities and their books from a separate working
+directory, and all shipped personality/book file references. Engine input and
+output are saved under the build directory's `tests/` folder.
+
+For a manual benchmark, run the engine and enter `bench 8`, followed by `quit`.
+Compare node counts before and after changes to engine behavior.
+
+## Contributing
 
 If You add something to Rodent IV, keep in mind the following:
 

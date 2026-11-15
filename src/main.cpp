@@ -137,7 +137,7 @@ if (Glob.isNoisy) {
 #endif
 }
 
-    PrintOverrides(); // print books and pers paths overrides (26/08/17: linux only)
+    PrintOverrides(); // print books and pers paths overrides
 
     GuideBook.SetBookName("guide.bin");
     MainBook.SetBookName("rodent.bin");

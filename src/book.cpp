@@ -343,7 +343,7 @@ void sBook::OpenPolyglot() {
     ClosePolyglot();
 
     if (!isabsolute(bookName))                  // if known locations don't exist we want to load only from absolute paths
-        if (!ChDirEnv("RODENT4BOOKS"))          // try `RODENT4BOOKS` env var first (26/08/17: linux only)
+        if (!ChDirEnv("RODENT4BOOKS"))          // try `RODENT4BOOKS` env var first
             if (!ChDir(_BOOKSPATH)) return;     // next built-in path
 
     bookFile = fopen(bookName, "rb");

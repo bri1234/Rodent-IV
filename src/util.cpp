@@ -322,7 +322,8 @@ bool ChDir(const wchar_t *new_path) {
 
     return result;
 }
-#else
+#endif
+
 void PrintOverrides() {
 
     if (char *ptr = getenv("RODENT4BOOKS"))
@@ -330,20 +331,26 @@ void PrintOverrides() {
     if (char *ptr = getenv("RODENT4PERSONALITIES"))
         printfUciOut("info string override for personalities path: '%s'\n", ptr);
 }
-#ifndef ANDROID
 bool ChDirEnv(const char *env_name) {
-    char *env_path;
-    env_path = getenv(env_name);
-    if (env_path == NULL) return false;
+    // Try the literal directory first, including paths containing spaces.
+    const std::string env_value = GetEnv(env_name);
+    if (env_value.empty()) return false;
+#if defined(_WIN32) || defined(_WIN64)
+    return SetCurrentDirectoryW(Str2WStr(env_value).c_str()) != 0;
+#else
+    if (chdir(env_value.c_str()) == 0) return true;
+#ifndef ANDROID
+    const char *env_path = env_value.c_str();
 
     printf_debug("env: %s = %s\n", env_name, env_path);
 
     wordexp_t p;
-    switch (wordexp(env_path, &p, 0)) {
+    switch (wordexp(env_path, &p, WRDE_NOCMD)) {
         case 0:
             break;
         case WRDE_NOSPACE:
             wordfree(&p);
+            return false;
         default:
             return false;
     }
@@ -355,8 +362,13 @@ bool ChDirEnv(const char *env_name) {
     wordfree(&p);
 
     return result;
-}
+#else
+    return false;
 #endif
+#endif
+}
+
+#if !defined(_WIN32) && !defined(_WIN64)
 bool ChDir(const char *new_path) {
     bool result;
     std::string NewPathStr;
@@ -413,7 +425,12 @@ void printfLog(const char *preStr, const char *fmt, ...)
     va_start(ap, fmt);
 
     if (strcmp(preStr, ">> ")) // uci-in needn't echo
-        vfprintf(stdout, fmt, ap);
+    {
+        va_list consoleArgs;
+        va_copy(consoleArgs, ap);
+        vfprintf(stdout, fmt, consoleArgs);
+        va_end(consoleArgs);
+    }
 
     if (LogFileWStr != L"" && !SkipBeginningOfLog) {
 

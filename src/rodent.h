@@ -16,9 +16,6 @@ You should have received a copy of the GNU General Public License along with thi
 If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-// REGEX to count all the lines under MSVC 13: ^(?([^\r\n])\s)*[^\s+?/]+[^\n]*$
-// 9289 lines
-
 // bench 14, 64-bit release: 11133006 nodes searched in 11203, speed 993663 nps (Score: 2.306)
 // bench 14, 64-bit debug  : ??
 
@@ -1053,12 +1050,11 @@ extern const int ph_value[7];
     #else
         constexpr wchar_t _PERSONALITIESPATH[] = L"personalities\\";
     #endif
-    #define PrintOverrides() {}
-    // change dir and return true on success
-    #define ChDirEnv(dummy) false
     bool ChDir(const wchar_t *new_path);
     // classify path
-    constexpr bool isabsolute(const char *path) { return path[0] != '\0' && path[1] == ':'; }
+    constexpr bool isabsolute(const char *path) {
+        return path[0] == '/' || path[0] == '\\' || (path[0] != '\0' && path[1] == ':');
+    }
     #if __CYGWIN__
         // Workaround for win-builds with cygwin
         std::string GetFullPath(const char *exe_file);
@@ -1076,18 +1072,14 @@ extern const int ph_value[7];
     #else
         constexpr char _PERSONALITIESPATH[] = "personalities/";
     #endif
-    void PrintOverrides();
-    // change dir and return true on success
-    #ifndef ANDROID
-        bool ChDirEnv(const char *env_name);
-    #else
-        #define ChDirEnv(dummy) false
-    #endif
-	
     bool ChDir(const char *new_path);
     // classify path
     constexpr bool isabsolute(const char *path) { return path[0] == '/'; }
 #endif
+
+std::string GetEnv(const char *envName);
+void PrintOverrides();
+bool ChDirEnv(const char *env_name);
 
 #define printfUciIn(...)  printfLog(">> ", __VA_ARGS__)
 #define printfUciOut(...) printfLog("<< ", __VA_ARGS__)
@@ -1116,9 +1108,7 @@ extern std::wstring LogFileWStr;
 // till we got "setoption name LogFile value ..." or "ucinewgame" (in release build only).
 extern bool SkipBeginningOfLog;
 
-void FullPathEndSlash(std::wstring &pathWStr);
 void SetRodentHomeDir();
-void CreateRodentHome(const char *RodentDir);
 void ChangePersonalitySet(int persSetNo);
 
 extern unsigned char CastleFile_RQ;
