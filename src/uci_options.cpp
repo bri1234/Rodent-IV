@@ -651,9 +651,12 @@ void ReadPersonality(const char *fileName) {
                     cnt++;
                 }
 
+                if (cnt == PERSALIAS_MAXALIASES)
+                    continue;
+
                 *pos = '\0';
-                strncpy(pers_aliases.alias[cnt], line, PERSALIAS_ALEN-1); // -1 coz `strncpy` has a very unexpected glitch
-                strncpy(pers_aliases.path[cnt], pos+1, PERSALIAS_PLEN-1); // see the C11 language standard, note 308
+                snprintf(pers_aliases.alias[cnt], PERSALIAS_ALEN, "%.*s", PERSALIAS_ALEN - 1, line);
+                snprintf(pers_aliases.path[cnt], PERSALIAS_PLEN, "%s", pos + 1);
 
                 // test if filename exists:
                 FILE *tempFile = NULL;

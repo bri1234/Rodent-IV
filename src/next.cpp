@@ -30,7 +30,7 @@ void cEngine::InitMoves(POS *p, MOVES *m, int trans_move, int ref_move, int ref_
     m->killer2 = mKiller[ply][1];
 }
 
-int cEngine::NextMove(MOVES *m, int *flag, int ply) {
+int cEngine::NextMove(MOVES *m, int *flag) {
 
     int move;
 
@@ -103,7 +103,7 @@ int cEngine::NextMove(MOVES *m, int *flag, int ply) {
 
         case 6: // helper phase: generate quiet moves
             m->last = m->p->GenerateQuiet(m->move);
-            ScoreQuiet(m, ply);
+            ScoreQuiet(m);
             m->next = m->move;
             m->phase = 7;
         // fallthrough
@@ -191,7 +191,7 @@ int cEngine::NextSpecialMove(MOVES *m, int *flag) {
 
         case 5: // helper phase: generate checking moves
             m->last = m->p->GenerateSpecial(m->move);
-            ScoreQuiet(m, 99);
+            ScoreQuiet(m);
             m->next = m->move;
             m->phase = 6;
         // fallthrough
@@ -234,7 +234,7 @@ void cEngine::ScoreCaptures(MOVES *m) {
         *valuep++ = MvvLva(m->p, *movep);
 }
 
-void cEngine::ScoreQuiet(MOVES *m, int ply) {
+void cEngine::ScoreQuiet(MOVES *m) {
 
     int *movep, *valuep;
 	int mv_score = 0;

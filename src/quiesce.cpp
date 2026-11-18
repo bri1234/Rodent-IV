@@ -191,7 +191,7 @@ int cEngine::QuiesceFlee(POS *p, int ply, int alpha, int beta, int *pv) {
 
     // MAIN LOOP
 
-    while ((move = NextMove(m, &mv_type, ply))) {
+    while ((move = NextMove(m, &mv_type))) {
 
         // MAKE MOVE
 

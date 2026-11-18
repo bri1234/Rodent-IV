@@ -367,12 +367,10 @@ void ParseGo(POS *p, const char *ptr) {
 
     if (Glob.multiPv > 1) {
 
-        int pv[MAX_PLY];
-
 #ifndef USE_THREADS
-        EngineSingle.MultiPv(p, pv);
+        EngineSingle.MultiPv(p);
 #else
-        Engines.front().MultiPv(p, pv);
+        Engines.front().MultiPv(p);
 #endif
 
         if (Glob.goodbye)

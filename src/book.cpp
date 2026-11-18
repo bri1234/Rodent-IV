@@ -366,8 +366,12 @@ void sBook::OpenPolyglot() {
     if (bookSizeInEntries < BOOK_IN_MEMORY_MB * 1024 * 1024 / 16) {
         bookMemory = (unsigned char *)malloc(16 * bookSizeInEntries);
         if (bookMemory) {
+            const size_t entryCount = static_cast<size_t>(bookSizeInEntries);
             rewind(bookFile);
-            fread(bookMemory, 16, bookSizeInEntries, bookFile);
+            if (fread(bookMemory, 16, entryCount, bookFile) != entryCount) {
+                ClosePolyglot();
+                return;
+            }
             fclose(bookFile);
             bookFile = NULL;
         }

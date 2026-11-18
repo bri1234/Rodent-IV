@@ -334,7 +334,7 @@ void cEngine::EvaluatePieces(POS *p, eData *e, eColor sd) {
         flatMobMg += n_flat_mg[cnt];
         flatMobEg += n_flat_eg[cnt];
 
-		EvaluateShielded(p, e, sd, sq, V(N_SH_MG), V(N_SH_EG), &outpostMg, &outpostEg);   // knight shielded by a pawn
+		EvaluateShielded(p, sd, sq, V(N_SH_MG), V(N_SH_EG), &outpostMg, &outpostEg);   // knight shielded by a pawn
         EvaluateOutpost(p, e, sd, N, sq, &outpostMg, &outpostEg);    // outpost
     }
 
@@ -379,7 +379,7 @@ void cEngine::EvaluatePieces(POS *p, eData *e, eColor sd) {
             Add(e, sd, V(B_REACH_MG), V(B_REACH_EG));
         }
 
-		EvaluateShielded(p, e, sd, sq, V(B_SH_MG), V(B_SH_EG), &outpostMg, &outpostEg);  // bishop shielded by a pawn
+		EvaluateShielded(p, sd, sq, V(B_SH_MG), V(B_SH_EG), &outpostMg, &outpostEg);  // bishop shielded by a pawn
         EvaluateOutpost(p, e, sd, B, sq, &outpostMg, &outpostEg);              // outpost
 
         // Bishops side by side
@@ -591,7 +591,7 @@ void cEngine::EvalPin(POS * p, eData * e, eColor c, eSquare pinned0, eSquare pin
     }
 }
 
-void cEngine::EvaluateShielded(POS *p, eData *e, eColor sd, int sq, int v1, int v2, int *outpost_mg, int *outpost_eg) {
+void cEngine::EvaluateShielded(POS *p, eColor sd, int sq, int v1, int v2, int *outpost_mg, int *outpost_eg) {
 
     if (SqBb(sq) & Mask.home[sd]) {
         U64 stop = BB.ShiftFwd(SqBb(sq), sd);             // get square in front of a minor

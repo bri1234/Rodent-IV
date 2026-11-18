@@ -450,11 +450,11 @@ void printfLog(const char *preStr, const char *fmt, ...)
     va_end(ap);
 }
 
-bool IsProcessRunning(const char *processToFind)
+#if defined(_WIN32) || defined(_WIN64)
+static bool IsProcessRunning(const char *processToFind)
 {
     bool exists = false;
 
-#if defined(_WIN32) || defined(_WIN64)
     bool bResult;
 
     std::string processToFindStr = str_tolower(processToFind);
@@ -475,13 +475,14 @@ bool IsProcessRunning(const char *processToFind)
     }
 
     CloseHandle(snapshot);
-#endif
 
     return exists;
 }
+#endif
 
 void CheckGUI() {
 
+#if defined(_WIN32) || defined(_WIN64)
     if (IsProcessRunning("arena.exe")) {
         printfUciOut("info string GUI=Arena\n");
         Glob.usedGUI = Arena;
@@ -489,14 +490,17 @@ void CheckGUI() {
         // Don't send "UCI_Chess960"
         // But O-O notation works also in uci-standardchess, so always us it
         Glob.CastleNotation = OOO;
-    } else if (IsProcessRunning("winboard.exe")) {
+        return;
+    }
+    if (IsProcessRunning("winboard.exe")) {
         printfUciOut("info string GUI=Winboard\n");
         Glob.usedGUI = WinBoard;
         // Detection not really needed
         // Winboard uses maximum 16 values for combo-options
         // But don't help to send "info string" - Winboard doesn't show
-    } else {
-        Glob.usedGUI = Other;
-        printf_debug("GUI=???\n");
+        return;
     }
+#endif
+    Glob.usedGUI = Other;
+    printf_debug("GUI=???\n");
 }

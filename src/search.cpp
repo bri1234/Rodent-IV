@@ -220,23 +220,17 @@ void cEngine::ShowMultiPVInfo(POS * p, int curMove, int curDepth,
     }
 }
 
-void cEngine::MultiPv(POS * p, int * pv) {
+void cEngine::MultiPv(POS *p) {
 
     int bestScore;
 
     int bestPv = 1;
-    int val[MAX_PV + 1];
-    Line line[MAX_PV + 1];
+    int val[MAX_PV + 1]{};
+    Line line[MAX_PV + 1]{};
 
     int bestPvLastDepth = 0;
-    int valLastDepth[MAX_PV + 1];
-    Line lineLastDepth[MAX_PV + 1];
-
-    for (int i = 0; i <= MAX_PV; i++) {
-        val[i] = 0;
-        valLastDepth[i] = 0;
-        lineLastDepth[i].pv[0] = 0;
-    }
+    int valLastDepth[MAX_PV + 1]{};
+    Line lineLastDepth[MAX_PV + 1]{};
 
     for (mRootDepth = 1; mRootDepth <= msSearchDepth; mRootDepth++) {
         Glob.ClearAvoidList();
@@ -282,8 +276,6 @@ void cEngine::MultiPv(POS * p, int * pv) {
             valLastDepth[i] = val[i];
             lineLastDepth[i] = line[i];
         }
-
-        // pv = line[bestPv].pv; // "pv" isn't used and also not working in this way. Do we need it?
     }
 
     ReadyForBestmove();
@@ -513,7 +505,7 @@ int cEngine::SearchRoot(POS *p, int ply, int alpha, int beta, int depth, int *pv
 
     // MAIN LOOP
 
-    while ((move = NextMove(m, &moveType, ply))) {
+    while ((move = NextMove(m, &moveType))) {
 
         // this thread appears to be lagging behind
         // - let's restart it
@@ -855,7 +847,7 @@ int cEngine::Search(POS *p, int ply, int alpha, int beta, int depth, bool wasNul
 
         // null move depth reduction - modified Stockfish formula
 
-        newDepth = SetNullReductionDepth(depth, eval, beta);
+        newDepth = SetNullReductionDepth(depth);
 
         // omit null move search if normal search to the same depth wouldn't exceed beta
         // (sometimes we can check it for free via hash table)
@@ -937,7 +929,7 @@ avoidNull:
 
     // MAIN LOOP
 
-    while ((move = NextMove(m, &moveType, ply))) {
+    while ((move = NextMove(m, &moveType))) {
 
         // SET FUTILITY PRUNING FLAG
         // before the first applicable move is tried
@@ -1211,10 +1203,9 @@ bool cEngine::ShouldAbortSearch() {
     return (Glob.abortSearch && mRootDepth > 1);
 }
 
-int cEngine::SetNullReductionDepth(int depth, int eval, int beta) {
+int cEngine::SetNullReductionDepth(int depth) {
 
     return depth - ((823 + 67 * depth) / 256);
-                // - Min(3, (eval - beta) / 200);
 }
 
 U64 GetNps(int elapsed) {

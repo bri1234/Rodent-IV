@@ -864,11 +864,11 @@ class cEngine {
 
     static void InitCaptures(POS *p, MOVES *m);
     void InitMoves(POS *p, MOVES *m, int trans_move, int ref_move, int ref_sq, int ply);
-    int NextMove(MOVES *m, int *flag, int ply);
+    int NextMove(MOVES *m, int *flag);
     int NextSpecialMove(MOVES *m, int *flag);
     static int NextCapture(MOVES *m);
     static void ScoreCaptures(MOVES *m);
-    void ScoreQuiet(MOVES *m, int ply);
+    void ScoreQuiet(MOVES *m);
     static int SelectBest(MOVES *m);
     static int BadCapture(POS *p, int move);
     static int MvvLva(POS *p, int move);
@@ -895,7 +895,7 @@ class cEngine {
                          int valLastDepth[MAX_PV + 1], Line lineLastDepth[MAX_PV + 1]);
     void Slowdown();
     int SetLateMoveReduction(bool isPv, int depth, int movesTried, int moveHistScore, bool improving);
-    int SetNullReductionDepth(int depth, int eval, int beta);
+    int SetNullReductionDepth(int depth);
     bool TimeTestIntervalReached();
 
     int Evaluate(POS *p, eData *e);
@@ -903,14 +903,14 @@ class cEngine {
     static int EvaluateChains(POS *p, eColor sd);
     static void EvaluateMaterial(POS *p, eData *e, eColor sd);
     static void EvaluatePieces(POS *p, eData *e, eColor sd);
-	static void EvaluateShielded(POS *p, eData *e, eColor sd, int sq, int v1, int v2, int *outpost_mg, int *outpost_eg);
+	static void EvaluateShielded(POS *p, eColor sd, int sq, int v1, int v2, int *outpost_mg, int *outpost_eg);
     static void EvaluateOutpost(POS *p, eData *e, eColor sd, int pc, int sq, int *outpost_mg, int *outpost_eg);
     static void EvaluatePawns(POS *p, eData *e, eColor sd);
     static void EvaluatePassers(POS *p, eData *e, eColor sd);
     static void EvaluateKing(POS *p, eData *e, eColor sd);
     static void EvaluateKingFile(POS *p, eColor sd, U64 bb_file, int *shield, int *storm);
     static int EvaluateFileShelter(U64 bb_own_pawns, eColor sd);
-    static int EvaluateFileStorm(POS * p, U64 bb_opp_pawns, eColor sd);
+    static int EvaluateFileStorm(U64 bb_opp_pawns, eColor sd);
     void EvaluatePawnStruct(POS *p, eData *e);
     static void EvaluateUnstoppable(eData *e, POS *p);
     static void EvaluateThreats(POS *p, eData *e, eColor sd);
@@ -990,7 +990,7 @@ class cEngine {
     void Bench(int depth);
     void ClearAll();
     void Think(POS *p);
-	void MultiPv(POS *p, int * pv);
+	void MultiPv(POS *p);
 
 #ifdef USE_TUNING
     double best_tune;

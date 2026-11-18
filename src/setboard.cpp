@@ -22,7 +22,7 @@ If not, see <http://www.gnu.org/licenses/>.
 
 void POS::ClearPosition() {
 
-    *this = {{0}};
+    *this = POS{};
 
     mKingSq[WC] = NO_SQ;
     mKingSq[BC] = NO_SQ;

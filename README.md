@@ -38,6 +38,17 @@ For Visual Studio, select its generator with `-G`, for example
 `-G "Visual Studio 17 2022" -A x64`. Multi-configuration generators place the
 executable and its data in `build/custom/bin/Release/` (or `Debug/`).
 
+CMake stores the absolute source path and the selected C++ compiler in
+`CMakeCache.txt` in each build directory. If CMake reports a source path
+mismatch after moving or copying the project, rerun the configure step with
+`cmake --preset release --fresh` and then rebuild. For a manual build, add
+`--fresh` to the configure command or choose a new build directory with `-B`.
+
+To switch compilers, configure with a fresh cache and set `CMAKE_CXX_COMPILER`.
+For example, on Linux with GCC 15 installed, run
+`cmake --preset release --fresh -DCMAKE_CXX_COMPILER=g++-15`.
+Pass any custom `-D` options again when using `--fresh`.
+
 CPU-specific GCC/Clang optimizations are optional:
 
 ```sh

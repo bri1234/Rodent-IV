@@ -165,7 +165,7 @@ void cEngine::EvaluateKingFile(POS *p, eColor sd, U64 bb_file, int *shield, int 
     if (p->Kings(sd) & bb_file) shelter = ((shelter * 120) / 100);
     if (bb_file & bbCentralFile) shelter /= 2;
     *shield += shelter;
-    *storm += EvaluateFileStorm(p, bb_file & p->Pawns(~sd), sd);
+    *storm += EvaluateFileStorm(bb_file & p->Pawns(~sd), sd);
 }
 
 int cEngine::EvaluateFileShelter(U64 bb_own_pawns, eColor sd) {
@@ -180,7 +180,7 @@ int cEngine::EvaluateFileShelter(U64 bb_own_pawns, eColor sd) {
     return 0;
 }
 
-int cEngine::EvaluateFileStorm(POS * p, U64 bb_opp_pawns, eColor sd) {
+int cEngine::EvaluateFileStorm(U64 bb_opp_pawns, eColor sd) {
 
     if (!bb_opp_pawns) return V(P_ST_OPEN);
     if (bb_opp_pawns & bbRelRank[sd][RANK_3]) return V(P_ST_3);
